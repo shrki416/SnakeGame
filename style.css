@@ -26,6 +26,8 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  /* font-family: "Ubuntu", sans-serif; */
+  font-family: "VT323", monospace;
 }
 
 footer {
@@ -53,5 +55,10 @@ footer {
 }
 
 #rightFooterDiv {
-  font-style: initial;
+  display: flex;
+  flex-direction: column;
+}
+
+#highScoreDiv {
+  text-align: right;
 }
