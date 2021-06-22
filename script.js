@@ -1,8 +1,8 @@
 const snake = {
   speedInX: 0,
-  speedInY: 1,
-  positionX: 400,
-  positionY: 250,
+  speedInY: 0.1,
+  positionX: [400, 400, 400, 400, 400],
+  positionY: [250, 240, 230, 220, 210],
 };
 
 const apple = {
@@ -15,7 +15,7 @@ const apple = {
 const gameSettings = {
   canvasWidth: 600,
   canvasHeight: 500,
-  selectedSpeed: 1,
+  selectedSpeed: 0.1,
   isGameRunning: 0,
 };
 
@@ -83,11 +83,20 @@ function drawSnake() {
   const canvas = document.querySelector("#gameCanvas");
   const canvasContext = canvas.getContext("2d");
 
-  snake.positionY += snake.speedInY;
-  snake.positionX += snake.speedInX;
+  if (snake.positionY.length > 1) {
+    snake.positionX.pop();
+    snake.positionY.pop();
+    snake.positionX.unshift(snake.positionX[0] + snake.speedInX);
+    snake.positionY.unshift(snake.positionY[0] + snake.speedInY);
+  } else {
+    snake.positionX += snake.speedInX;
+    snake.positionY += snake.speedInY;
+  }
 
-  canvasContext.fillStyle = "green";
-  canvasContext.fillRect(snake.positionX, snake.positionY, 10, 10);
+  for (i = 0; i < snake.positionY.length; i++) {
+    canvasContext.fillStyle = "green";
+    canvasContext.fillRect(snake.positionX[i], snake.positionY[i], 10, 10);
+  }
 }
 
 function drawEverythingElse() {
@@ -115,52 +124,67 @@ function initializeGame() {
 
   canvas.width = 600;
   canvas.height = 500;
-  snake.positionX = canvas.width / 2;
-  snake.positionY = canvas.height / 2;
+  snake.positionX[0] = canvas.width / 2;
+  snake.positionY[0] = canvas.height / 2;
 
   canvasContext.fillStyle = "black";
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
   canvasContext.fillStyle = "green";
-  canvasContext.fillRect(snake.positionX, snake.positionY, 10, 10);
+  canvasContext.fillRect(snake.positionX[0], snake.positionY[0], 10, 10);
 
   placeApple();
 }
 
 function isSnakeInbounds() {
-  if (snake.positionX === 0 || snake.positionX > gameSettings.canvasWidth - 10)
+  if (
+    snake.positionX[0] <= 0 ||
+    snake.positionX[0] > gameSettings.canvasWidth - 10
+  )
     resetGame();
-  if (snake.positionY === 0 || snake.positionY > gameSettings.canvasHeight - 10)
+  if (
+    snake.positionY[0] <= 0 ||
+    snake.positionY[0] > gameSettings.canvasHeight - 10
+  )
     resetGame();
 }
 
 function didEatApple() {
   if (
-    snake.positionY >= apple.positionY &&
-    snake.positionY <= apple.positionY + apple.size
+    snake.positionX[0] < apple.positionX + apple.size &&
+    snake.positionX[0] + 10 > apple.positionX &&
+    snake.positionY[0] < apple.positionY + apple.size &&
+    snake.positionY[0] + 10 > apple.positionY
   ) {
-    if (
-      snake.positionX >= apple.positionX &&
-      snake.positionX <= apple.positionX + apple.size
-    ) {
-      apple.numberEaten++;
-      placeApple();
-    }
+    apple.numberEaten++;
+    placeApple();
+    growSnake();
   }
+}
+
+function growSnake() {
+  snake.positionX.push(snake.positionX[0]);
+  snake.positionY.push(snake.positionY[0]);
 }
 
 function resetGame() {
   snake.speedInX = 0;
   snake.speedInY = -gameSettings.selectedSpeed;
-  snake.positionX = gameSettings.canvasWidth / 2;
-  snake.positionY = gameSettings.canvasHeight / 2;
+  snake.positionX[0] = gameSettings.canvasWidth / 2;
+  snake.positionY[0] = gameSettings.canvasHeight / 2;
   toggleGamePause();
   initializeGame();
+  snake.positionX = [400, 400, 400, 400];
+  snake.positionY = [250, 240, 230, 220];
+  apple.numberEaten = 0;
 }
 
 function placeApple() {
-  apple.positionX = Math.floor(Math.random() * (gameSettings.canvasWidth - 10));
+  apple.size = Math.floor(Math.random() * 30 + 1);
+  apple.positionX = Math.floor(
+    Math.random() * (gameSettings.canvasWidth - apple.size)
+  );
   apple.positionY = Math.floor(
-    Math.random() * (gameSettings.canvasHeight - 10)
+    Math.random() * (gameSettings.canvasHeight - apple.size)
   );
 }
