@@ -1,5 +1,10 @@
 document.addEventListener("keydown", whichKeyisPressed);
 
+document.addEventListener("click", (e) => {
+  if (e.target.id === "applySettingsButton") applyGameSettings();
+  if (e.target.id === "clearHighScoreButton") clearHighScore();
+});
+
 const gameSettings = {
   canvasWidth: 600,
   canvasHeight: 500,
@@ -20,7 +25,13 @@ const apple = {
   positionX: 0,
   positionY: 0,
   size: 10,
-  numberEaten: 0,
+};
+
+const score = {
+  numberApplesEaten: 0,
+  multiplier: 1,
+  gameScore: 0,
+  highScore: 0,
 };
 
 window.onload = () => {
@@ -194,7 +205,7 @@ function didEatApple() {
     //   snake.positionY[0] < apple.positionY + apple.size &&
     //   snake.positionY[0] + gameSettings.snakeSize > apple.positionY
     // ) {
-    apple.numberEaten++;
+    score.numberApplesEaten++;
     updateScore();
     placeApple();
     growSnake();
@@ -221,7 +232,7 @@ function resetGame() {
   snake.speedInY = gameSettings.snakeSize;
   toggleGamePause();
   initializeGame();
-  apple.numberEaten = 0;
+  score.numberApplesEaten = 0;
 }
 
 function placeApple() {
@@ -234,11 +245,6 @@ function placeApple() {
     Math.random() * (gameSettings.canvasHeight - apple.size)
   );
 }
-
-document.addEventListener("click", (e) => {
-  if (e.target.id === "applySettingsButton") applyGameSettings();
-  if (e.target.id === "clearHighScoreButton") clearHighScore();
-});
 
 function applyGameSettings() {
   const canvasSizeSelected = document.getElementsByName("canvasSize");
@@ -275,4 +281,32 @@ function applyGameSettings() {
   initializeGame();
 }
 
-function updateScore() {}
+function updateScore() {
+  let snakeSpeed = abs(snake.speedInX);
+  if (snake.speedInY) snakeSpeed = abs(snake.speedInY);
+
+  score.gameScore +=
+    10000 *
+    score.multiplier *
+    (1 / apple.size) *
+    (1 / gameSettings.canvasWidth) *
+    snakeSpeed;
+
+  if (score.gameScore > score.highScore) {
+    score.highScore = score.gameScore;
+  }
+}
+
+function displayScore() {
+  const displayApplesEaten = document.querySelector("#applesEatenSpan");
+  displayApplesEaten.innerHTML = `${score.numberApplesEaten}`;
+
+  const displayMutliplier = document.querySelector("#multiplierSpan");
+  displayMutliplier.innerHTML = `${score.numberApplesEaten}`;
+
+  const displayGameScore = document.querySelector("#currentScoreDiv");
+  displayGameScore.innerHTML = `${score.gameScore}`;
+
+  const displayHighScore = document.querySelector("#highScoreDiv");
+  displayHighScore.innerHTML = `${score.highScore}`;
+}
