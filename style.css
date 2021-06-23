@@ -26,8 +26,24 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* font-family: "Ubuntu", sans-serif; */
   font-family: "VT323", monospace;
+}
+
+#canvasAndSettingsDiv {
+  display: flex;
+}
+
+#canvasDiv {
+  padding-left: 138px;
+  margin-right: 10px;
+}
+
+#gameSizeDiv > h3:first-child {
+  margin-top: 0;
+}
+
+h3 {
+  margin-bottom: 2px;
 }
 
 footer {

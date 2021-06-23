@@ -14,10 +14,85 @@
       <h1>Snake Game</h1>
       <p>created by: Nathan McCraw</p>
     </header>
-    <canvas id="gameCanvas">
-      This is alternate text that will show when the browser doesn't support
-      canvas or JS
-    </canvas>
+    <div id="canvasAndSettingsDiv">
+      <div id="canvasDiv">
+        <canvas id="gameCanvas">
+          This is alternate text that will show when the browser doesn't support
+          canvas or JS
+        </canvas>
+      </div>
+      <div>
+        <div id="gameSizeDiv">
+          <h3>Game Size:</h3>
+          <div>
+            <input
+              type="radio"
+              name="canvasSize"
+              value="small"
+              id="smallCanvas"
+            />
+            <label for="smallCanvas">Small</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="canvasSize"
+              value="medium"
+              id="mediumCanvas"
+            />
+            <label for="mediumCanvas">Medium</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="canvasSize"
+              value="large"
+              id="largeCanvas"
+            />
+            <label for="largeCanvas">Large</label>
+          </div>
+        </div>
+        <div id="snakeSpeedDiv">
+          <h3>Snake Speed:</h3>
+          <div>
+            <input type="radio" name="snakeSpeed" value="300" id="slowSpeed" />
+            <label for="slowSpeed">Slow</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="snakeSpeed"
+              value="150"
+              id="normalSpeed"
+            />
+            <label for="normalSpeed">Normal</label>
+          </div>
+          <div>
+            <input type="radio" name="snakeSpeed" value="50" id="fastSpeed" />
+            <label for="fastSpeed">Fast</label>
+          </div>
+        </div>
+        <div id="appleSizeDiv">
+          <h3>Apple Size:</h3>
+          <div>
+            <input type="radio" name="appleSize" value="15" id="smallApple" />
+            <label for="smallApple">Small</label>
+          </div>
+          <div>
+            <input type="radio" name="appleSize" value="30" id="normalApple" />
+            <label for="normalApple">Normal</label>
+          </div>
+          <div>
+            <input type="radio" name="appleSize" value="50" id="bigApple" />
+            <label for="bigApple">Big</label>
+          </div>
+        </div>
+        <div id="clearHighScoreDiv">
+          <input type="checkbox" name="clearHighScore" />
+          <label for="clearHighScore">Clear High Score</label>
+        </div>
+      </div>
+    </div>
     <footer>
       <div id="footerDiv">
         <div id="leftFooterDiv">
