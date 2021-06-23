@@ -36,6 +36,9 @@ const score = {
 
 window.onload = () => {
   initializeGame();
+  if (localStorage.length)
+    score.highScore = parseInt(localStorage.getItem("highScore"));
+  updateScore();
 };
 
 function initializeGame() {
@@ -282,19 +285,23 @@ function applyGameSettings() {
 }
 
 function updateScore() {
-  let snakeSpeed = abs(snake.speedInX);
-  if (snake.speedInY) snakeSpeed = abs(snake.speedInY);
+  let snakeSpeed = Math.abs(snake.speedInX);
+  if (snake.speedInY) snakeSpeed = Math.abs(snake.speedInY);
 
-  score.gameScore +=
+  score.gameScore += Math.floor(
     10000 *
-    score.multiplier *
-    (1 / apple.size) *
-    (1 / gameSettings.canvasWidth) *
-    snakeSpeed;
+      score.multiplier *
+      (1 / apple.size) *
+      (1 / gameSettings.canvasWidth) *
+      snakeSpeed
+  );
 
   if (score.gameScore > score.highScore) {
     score.highScore = score.gameScore;
+    localStorage.setItem("highScore", score.highScore);
   }
+
+  displayScore();
 }
 
 function displayScore() {
