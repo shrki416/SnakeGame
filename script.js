@@ -1,3 +1,5 @@
+document.addEventListener("keydown", whichKeyisPressed);
+
 const gameSettings = {
   canvasWidth: 600,
   canvasHeight: 500,
@@ -32,6 +34,8 @@ function initializeGame() {
   canvas.width = gameSettings.canvasWidth;
   canvas.height = gameSettings.canvasHeight;
 
+  snake.positionX.splice(4);
+  snake.positionY.splice(4);
   for (i = 0; i < 5; i++) {
     snake.positionX[i] = canvas.width / 2;
     snake.positionY[i] = canvas.height / 2;
@@ -50,8 +54,6 @@ function initializeGame() {
 
   placeApple();
 }
-
-document.addEventListener("keydown", whichKeyisPressed);
 
 function whichKeyisPressed(e) {
   const keyPressed = e.key;
@@ -73,10 +75,10 @@ function toggleGamePause() {
     gameSettings.isGameRunning = setInterval(() => {
       drawEverythingElse();
       drawSnake();
-      isSnakeInbounds();
       didSnakeCollideWithSelf();
+      isSnakeInbounds();
       didEatApple();
-    }, refreshRate);
+    }, gameSettings.refreshRate);
   }
 }
 
@@ -160,7 +162,22 @@ function isSnakeInbounds() {
     resetGame();
 }
 
-function didEatApple({ apple }) {
+function didSnakeCollideWithSelf() {
+  for (i = 2; i < snake.positionX.length; i++)
+    if (
+      doesCollide(
+        snake.positionX[0],
+        snake.positionY[0],
+        gameSettings.snakeSize,
+        snake.positionX[i],
+        snake.positionY[i],
+        gameSettings.snakeSize
+      )
+    )
+      resetGame();
+}
+
+function didEatApple() {
   if (
     doesCollide(
       apple.positionX,
@@ -178,6 +195,7 @@ function didEatApple({ apple }) {
     //   snake.positionY[0] + gameSettings.snakeSize > apple.positionY
     // ) {
     apple.numberEaten++;
+    updateScore();
     placeApple();
     growSnake();
   }
@@ -217,14 +235,17 @@ function placeApple() {
   );
 }
 
-//event listener for button
+document.addEventListener("click", (e) => {
+  if (e.target.id === "applySettingsButton") applyGameSettings();
+  if (e.target.id === "clearHighScoreButton") clearHighScore();
+});
 
 function applyGameSettings() {
   const canvasSizeSelected = document.getElementsByName("canvasSize");
   let canvasSize = "";
 
   for (let i = 0; i < canvasSizeSelected.length; i++) {
-    if (canvasSizeSelected[i]) canvasSize = canvasSizeSelected[i].nodeValue;
+    if (canvasSizeSelected[i].checked) canvasSize = canvasSizeSelected[i].value;
   }
   if (canvasSize === "small") {
     gameSettings.canvasWidth = 300;
@@ -240,13 +261,18 @@ function applyGameSettings() {
   const userDesiredSnakeSpeed = document.getElementsByName("snakeSpeed");
 
   for (let i = 0; i < userDesiredSnakeSpeed.length; i++) {
-    if (userDesiredSnakeSpeed[i])
-      gameSettings.refreshRate = parseInt(userDesiredSnakeSpeed[i].nodeValue);
+    if (userDesiredSnakeSpeed[i].checked)
+      gameSettings.refreshRate = parseInt(userDesiredSnakeSpeed[i].value);
   }
 
   const appleSizeSelected = document.getElementsByName("appleSize");
 
   for (let i = 0; i < appleSizeSelected.length; i++) {
-    if (appleSizeSelected[i]) apple.size = appleSizeSelected[i].nodeValue;
+    if (appleSizeSelected[i]) apple.size = appleSizeSelected[i].value;
   }
+
+  gameSettings.isGameRunning = 1;
+  initializeGame();
 }
+
+function updateScore() {}

@@ -48,6 +48,7 @@
               name="canvasSize"
               value="large"
               id="largeCanvas"
+              checked="true"
             />
             <label for="largeCanvas">Large</label>
           </div>
@@ -64,6 +65,7 @@
               name="snakeSpeed"
               value="150"
               id="normalSpeed"
+              checked="true"
             />
             <label for="normalSpeed">Normal</label>
           </div>
@@ -79,7 +81,13 @@
             <label for="smallApple">Small</label>
           </div>
           <div>
-            <input type="radio" name="appleSize" value="30" id="normalApple" />
+            <input
+              type="radio"
+              name="appleSize"
+              value="30"
+              id="normalApple"
+              checked="true"
+            />
             <label for="normalApple">Normal</label>
           </div>
           <div>
@@ -88,8 +96,10 @@
           </div>
         </div>
         <div id="clearHighScoreDiv">
-          <input type="checkbox" name="clearHighScore" />
-          <label for="clearHighScore">Clear High Score</label>
+          <button id="clearHighScoreButton">Clear High Score</button>
+        </div>
+        <div id="applySettingsDiv">
+          <button id="applySettingsButton">Apply Settings</button>
         </div>
       </div>
     </div>
