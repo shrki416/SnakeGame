@@ -1,3 +1,10 @@
+window.onload = () => {
+  initializeGame();
+  if (localStorage.length)
+    score.highScore = parseInt(localStorage.getItem("highScore"));
+  updateScore();
+};
+
 document.addEventListener("keydown", whichKeyisPressed);
 
 document.addEventListener("click", (e) => {
@@ -5,16 +12,18 @@ document.addEventListener("click", (e) => {
   if (e.target.id === "clearHighScoreButton") {
     score.highScore = 0;
     displayScore();
+    document.querySelector("#gameCanvas").focus();
   }
 });
 
 const gameSettings = {
   canvasWidth: 600,
   canvasHeight: 500,
-  refreshRate: 150,
+  refreshRate: 125,
   isGameRunning: 0,
   snakeSize: 15,
   appleBaseSize: 30,
+  isOneSecond: 0,
 };
 
 const snake = {
@@ -35,13 +44,7 @@ const score = {
   multiplier: 1,
   gameScore: 0,
   highScore: 0,
-};
-
-window.onload = () => {
-  initializeGame();
-  if (localStorage.length)
-    score.highScore = parseInt(localStorage.getItem("highScore"));
-  updateScore();
+  timer: 5,
 };
 
 function initializeGame() {
@@ -89,14 +92,24 @@ function toggleGamePause() {
     clearInterval(gameSettings.isGameRunning);
     gameSettings.isGameRunning = 0;
   } else {
-    gameSettings.isGameRunning = setInterval(() => {
-      drawEverythingElse();
-      drawSnake();
-      didSnakeCollideWithSelf();
-      isSnakeInbounds();
-      didEatApple();
-    }, gameSettings.refreshRate);
+    runGame();
   }
+}
+
+function runGame() {
+  gameSettings.isGameRunning = setInterval(() => {
+    if (gameSettings.isOneSecond === 1000) {
+      gameSettings.isOneSecond = 0;
+      updateMultiplierTimer();
+    } else {
+      gameSettings.isOneSecond += gameSettings.refreshRate;
+    }
+    drawEverythingElse();
+    drawSnake();
+    didSnakeCollideWithSelf();
+    isSnakeInbounds();
+    didEatApple();
+  }, gameSettings.refreshRate);
 }
 
 function turnSnakeDown() {
@@ -205,16 +218,29 @@ function didEatApple() {
       gameSettings.snakeSize
     )
   ) {
-    // (
-    //   snake.positionX[0] < apple.positionX + apple.size &&
-    //   snake.positionX[0] + gameSettings.snakeSize > apple.positionX &&
-    //   snake.positionY[0] < apple.positionY + apple.size &&
-    //   snake.positionY[0] + gameSettings.snakeSize > apple.positionY
-    // ) {
     score.numberApplesEaten++;
+    score.multiplier++;
     updateScore();
     placeApple();
     growSnake();
+    score.timer = 5;
+  }
+}
+
+function updateMultiplierTimer() {
+  const displayMutliplierTimer = document.querySelector("#countDownCounterDiv");
+
+  if (gameSettings.isGameRunning) {
+    if (score.timer) {
+      score.timer--;
+      displayMutliplierTimer.innerHTML = `:${score.timer}`;
+    } else {
+      displayMutliplierTimer.innerHTML = ":--";
+      score.multiplier = 1;
+      displayScore();
+    }
+  } else {
+    displayMutliplierTimer.innerHTML = `:${score.timer}`;
   }
 }
 
@@ -240,6 +266,9 @@ function resetGame() {
   initializeGame();
   score.numberApplesEaten = 0;
   score.gameScore = 0;
+  score.multiplier = 1;
+  score.timer = 5;
+  updateMultiplierTimer();
   displayScore();
 }
 
@@ -332,7 +361,7 @@ function displayScore() {
   displayApplesEaten.innerHTML = `${score.numberApplesEaten}`;
 
   const displayMutliplier = document.querySelector("#multiplierSpan");
-  displayMutliplier.innerHTML = `${score.numberApplesEaten}`;
+  displayMutliplier.innerHTML = `${score.multiplier}`;
 
   const displayGameScore = document.querySelector("#currentScoreDiv");
   displayGameScore.innerHTML = `${score.gameScore}`;

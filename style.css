@@ -31,12 +31,12 @@ body {
 }
 
 #countDownTitleDiv,
-#countDownCounter {
+#countDownCounterDiv {
   border: solid black 2px;
   padding: 0 5px 0 5px;
 }
 
-#countDownCounter {
+#countDownCounterDiv {
   font-size: 75px;
   color: rgb(156, 18, 13);
 }
