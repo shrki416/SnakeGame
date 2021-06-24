@@ -15,13 +15,17 @@
       <p>created by: Nathan McCraw</p>
     </header>
     <div id="canvasAndSettingsDiv">
+      <div id="multiplierCountDownDiv">
+        <div id="countDownTitleDiv">Multiplier Reset:</div>
+        <div id="countDownCounter">:10</div>
+      </div>
       <div id="canvasDiv">
         <canvas id="gameCanvas">
           This is alternate text that will show when the browser doesn't support
           canvas or JS
         </canvas>
       </div>
-      <div>
+      <div id="settingsDiv">
         <div id="gameSizeDiv">
           <h3>Game Size:</h3>
           <div>
@@ -93,6 +97,27 @@
           <div>
             <input type="radio" name="appleSize" value="50" id="bigApple" />
             <label for="bigApple">Big</label>
+          </div>
+        </div>
+        <div id="snakeSizeDiv">
+          <h3>Snake Size:</h3>
+          <div>
+            <input type="radio" name="snakeSize" value="10" id="smallSnake" />
+            <label for="smallSnake">Small</label>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="snakeSize"
+              value="15"
+              id="mediumSnake"
+              checked="true"
+            />
+            <label for="mediumSnake">Medium</label>
+          </div>
+          <div>
+            <input type="radio" name="snakeSize" value="20" id="largeSnake" />
+            <label for="largeCanvas">Large</label>
           </div>
         </div>
         <div id="clearHighScoreDiv">

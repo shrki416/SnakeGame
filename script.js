@@ -2,7 +2,10 @@ document.addEventListener("keydown", whichKeyisPressed);
 
 document.addEventListener("click", (e) => {
   if (e.target.id === "applySettingsButton") applyGameSettings();
-  if (e.target.id === "clearHighScoreButton") clearHighScore();
+  if (e.target.id === "clearHighScoreButton") {
+    score.highScore = 0;
+    displayScore();
+  }
 });
 
 const gameSettings = {
@@ -10,8 +13,8 @@ const gameSettings = {
   canvasHeight: 500,
   refreshRate: 150,
   isGameRunning: 0,
-  snakeSize: 10,
-  appleBaseSize: 10,
+  snakeSize: 15,
+  appleBaseSize: 30,
 };
 
 const snake = {
@@ -58,7 +61,7 @@ function initializeGame() {
   canvasContext.fillStyle = "black";
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
-  canvasContext.fillStyle = "green";
+  canvasContext.fillStyle = "olive";
   canvasContext.fillRect(
     snake.positionX[0],
     snake.positionY[0],
@@ -153,7 +156,7 @@ function drawSnake() {
   snake.positionY.unshift(snake.positionY[0] + snake.speedInY);
 
   for (i = 0; i < snake.positionY.length; i++) {
-    canvasContext.fillStyle = "green";
+    canvasContext.fillStyle = "olive";
     canvasContext.fillRect(
       snake.positionX[i],
       snake.positionY[i],
@@ -236,23 +239,39 @@ function resetGame() {
   toggleGamePause();
   initializeGame();
   score.numberApplesEaten = 0;
+  score.gameScore = 0;
+  displayScore();
 }
 
 function placeApple() {
-  apple.size = Math.floor(Math.random() * gameSettings.appleBaseSize + 1);
+  apple.size = Math.floor(Math.random() * gameSettings.appleBaseSize + 5);
 
+  //wanted to wrap the two expressions below in a do..while(doesCollide) but
+  //couldn't figure out how to iterate through snake array in the while expression
   apple.positionX = Math.floor(
     Math.random() * (gameSettings.canvasWidth - apple.size)
   );
   apple.positionY = Math.floor(
     Math.random() * (gameSettings.canvasHeight - apple.size)
   );
+
+  for (i = 0; i < snake.positionX.length; i++)
+    if (
+      doesCollide(
+        apple.positionX,
+        apple.positionY,
+        apple.size,
+        snake.positionX[i],
+        snake.positionY[i],
+        gameSettings.snakeSize
+      )
+    )
+      placeApple();
 }
 
 function applyGameSettings() {
   const canvasSizeSelected = document.getElementsByName("canvasSize");
   let canvasSize = "";
-
   for (let i = 0; i < canvasSizeSelected.length; i++) {
     if (canvasSizeSelected[i].checked) canvasSize = canvasSizeSelected[i].value;
   }
@@ -268,19 +287,22 @@ function applyGameSettings() {
   }
 
   const userDesiredSnakeSpeed = document.getElementsByName("snakeSpeed");
-
   for (let i = 0; i < userDesiredSnakeSpeed.length; i++) {
     if (userDesiredSnakeSpeed[i].checked)
       gameSettings.refreshRate = parseInt(userDesiredSnakeSpeed[i].value);
   }
 
   const appleSizeSelected = document.getElementsByName("appleSize");
-
   for (let i = 0; i < appleSizeSelected.length; i++) {
-    if (appleSizeSelected[i]) apple.size = appleSizeSelected[i].value;
+    if (appleSizeSelected[i].checked) apple.size = appleSizeSelected[i].value;
   }
 
-  gameSettings.isGameRunning = 1;
+  const snakeSizeSelected = document.getElementsByName("snakeSize");
+  for (let i = 0; i < snakeSizeSelected.length; i++) {
+    if (snakeSizeSelected[i].checked)
+      gameSettings.snakeSize = parseInt(snakeSizeSelected[i].value);
+  }
+
   initializeGame();
 }
 
@@ -289,7 +311,8 @@ function updateScore() {
   if (snake.speedInY) snakeSpeed = Math.abs(snake.speedInY);
 
   score.gameScore += Math.floor(
-    10000 *
+    100000 *
+      score.multiplier *
       score.multiplier *
       (1 / apple.size) *
       (1 / gameSettings.canvasWidth) *

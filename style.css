@@ -3,7 +3,7 @@ body {
 }
 header {
   text-align: center;
-  font-size: x-large;
+  font-size: xx-large;
   border: double black 6px;
   border-radius: 75px;
   margin: 5px;
@@ -22,10 +22,6 @@ header > p {
 }
 
 body {
-  /* display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center; */
   font-family: "VT323", monospace;
 }
 
@@ -34,9 +30,19 @@ body {
   justify-content: center;
 }
 
+#countDownTitleDiv,
+#countDownCounter {
+  border: solid black 2px;
+  padding: 0 5px 0 5px;
+}
+
+#countDownCounter {
+  font-size: 75px;
+  color: rgb(156, 18, 13);
+}
+
 #canvasDiv {
-  padding-left: 138px;
-  margin-right: 10px;
+  margin: 0 10px 0 10px;
 }
 
 #gameSizeDiv > h3:first-child {
